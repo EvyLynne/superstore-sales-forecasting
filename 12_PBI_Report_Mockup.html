@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Superstore Sales — Power BI Report Mockup</title>
+<style>
+  :root{
+    --navy:#1F3864; --navy2:#2E74B5; --teal:#1B9E8F; --amber:#C8860A; --red:#C0392B; --green:#1E7B34;
+    --canvas:#FAFAFA; --card:#FFFFFF; --ink:#252423; --sub:#605E5C; --line:#E1DFDD;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"Segoe UI",Calibri,Arial,sans-serif;background:#ECEAE7;color:var(--ink);padding:24px}
+  .frame{max-width:1320px;margin:0 auto}
+  .mocknote{font-size:12px;color:var(--sub);text-align:center;margin-bottom:10px;letter-spacing:.4px}
+  .tabs{display:flex;gap:2px;margin-bottom:0}
+  .tab{padding:10px 22px;background:#D8D5D1;border:none;border-radius:6px 6px 0 0;font-size:13px;font-weight:600;color:var(--sub);cursor:pointer;font-family:inherit}
+  .tab.active{background:var(--navy);color:#fff}
+  .page{display:none;background:var(--canvas);border:1px solid var(--line);border-radius:0 8px 8px 8px;padding:14px;aspect-ratio:16/9;min-height:640px;flex-direction:column;gap:10px}
+  .page.active{display:flex}
+  /* header band */
+  .hdr{display:flex;align-items:center;justify-content:space-between;background:var(--navy);border-radius:6px;padding:10px 16px}
+  .hdr h1{font-size:17px;color:#fff;font-weight:600}
+  .hdr .sub{font-size:11px;color:#B9C7DE;font-weight:400;margin-top:2px}
+  .slicers{display:flex;gap:10px;align-items:center}
+  .chips{display:flex;gap:6px}
+  .chip{font-size:11px;padding:4px 12px;border-radius:12px;background:#33507F;color:#CBD8EC;cursor:default}
+  .chip.on{background:#fff;color:var(--navy);font-weight:600}
+  .dateslicer{font-size:11px;color:#CBD8EC;background:#33507F;padding:5px 12px;border-radius:4px}
+  /* cards */
+  .kpirow{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  .kpi{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:10px 14px 8px}
+  .kpi .lbl{font-size:11px;color:var(--sub);text-transform:uppercase;letter-spacing:.5px}
+  .kpi .val{font-size:26px;font-weight:600;margin:2px 0}
+  .kpi .ref{font-size:11.5px}
+  .up{color:var(--green)} .down{color:var(--red)} .warn{color:var(--amber)}
+  .spark{margin-top:4px}
+  /* grid + visuals */
+  .grid{display:grid;gap:10px;flex:1;min-height:0}
+  .viz{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:8px 12px;display:flex;flex-direction:column;min-height:0}
+  .viz h3{font-size:12.5px;font-weight:600;color:var(--ink);margin-bottom:2px}
+  .viz .cap{font-size:10.5px;color:var(--sub);margin-bottom:4px}
+  .viz svg{flex:1;width:100%;min-height:0}
+  .legend{display:flex;gap:14px;font-size:10.5px;color:var(--sub);margin-top:2px}
+  .sw{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:4px;vertical-align:-1px}
+  table{width:100%;border-collapse:collapse;font-size:11px}
+  th{text-align:left;color:var(--sub);font-weight:600;border-bottom:2px solid var(--line);padding:4px 6px}
+  td{padding:4px 6px;border-bottom:1px solid #F0EEEC}
+  td.num,th.num{text-align:right}
+  .bar-in{height:10px;background:var(--navy2);border-radius:2px;display:inline-block;vertical-align:middle}
+  .pill{padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600;color:#fff}
+  .pill.risk{background:var(--amber)} .pill.dorm{background:var(--red)}
+  .slider{display:flex;flex-direction:column;gap:6px;justify-content:center}
+  .slider input{width:100%;accent-color:var(--navy)}
+  .scenario .val{font-size:24px;font-weight:600;color:var(--teal)}
+  .note{font-size:11px;color:var(--sub);line-height:1.45}
+  .footer{font-size:10px;color:var(--sub);display:flex;justify-content:space-between;padding:0 4px}
+  @media (max-width:900px){ .page{aspect-ratio:auto} .kpirow,.grid{grid-template-columns:1fr !important} }
+</style>
+</head>
+<body>
+<div class="frame">
+  <div class="mocknote">DOCUMENT 12 · STATIC MOCKUP — Superstore Retail Sales &amp; Forecasting · companion to documents 01 and 15 (illustrative data)</div>
+  <div class="tabs">
+    <button class="tab active" data-p="p1">1 · Sales Performance</button>
+    <button class="tab" data-p="p2">2 · Forecast &amp; Outlook</button>
+    <button class="tab" data-p="p3">3 · Account &amp; Rep Actions</button>
+  </div>
+
+  <!-- ============ PAGE 1 ============ -->
+  <section class="page active" id="p1">
+    <div class="hdr">
+      <div><h1>Sales Performance</h1><div class="sub">Superstore · Regional Sales Review</div></div>
+      <div class="slicers">
+        <div class="chips"><span class="chip on">All</span><span class="chip">Central</span><span class="chip">East</span><span class="chip">South</span><span class="chip">West</span></div>
+        <div class="dateslicer">Order Date&nbsp; Jan 2014 – Dec 2017</div>
+      </div>
+    </div>
+    <div class="kpirow">
+      <div class="kpi"><div class="lbl">Total Sales</div><div class="val">$2.30M</div><div class="ref up">▲ +20.4% YoY</div><svg class="spark" width="100%" height="22" id="spark1"></svg></div>
+      <div class="kpi"><div class="lbl">Profit Margin %</div><div class="val">12.5%</div><div class="ref up">▲ +1.2 pts YoY</div></div>
+      <div class="kpi"><div class="lbl">Orders</div><div class="val">5,009</div><div class="ref" style="color:var(--sub)">AOV $459</div></div>
+      <div class="kpi"><div class="lbl">Quota Attainment</div><div class="val" style="color:var(--green)">104%</div><div class="ref up">+$27.9K vs quota</div></div>
+    </div>
+    <div class="grid" style="grid-template-columns:3fr 2fr;grid-template-rows:1fr 1fr">
+      <div class="viz" style="grid-row:span 2">
+        <h3>Monthly Sales vs Prior Year</h3><div class="cap">Total Sales (navy) · Sales PY (dashed gray)</div>
+        <svg id="cyPy" viewBox="0 0 560 300" preserveAspectRatio="none"></svg>
+        <div class="legend"><span><span class="sw" style="background:var(--navy)"></span>Total Sales</span><span><span class="sw" style="background:#B3B0AD"></span>Sales PY</span></div>
+      </div>
+      <div class="viz">
+        <h3>Sales by Region vs Quota</h3><div class="cap">Quota shown as lighter overlay</div>
+        <svg id="regBar" viewBox="0 0 340 160" preserveAspectRatio="none"></svg>
+      </div>
+      <div class="viz">
+        <h3>Regional Detail</h3><div class="cap">Matrix · Region ▸ State (collapsed)</div>
+        <table>
+          <tr><th>Region</th><th class="num">Sales</th><th class="num">YoY %</th><th class="num">Attain.</th><th class="num">Margin</th></tr>
+          <tr><td>▸ West</td><td class="num">$725.5K</td><td class="num up">▲ 23%</td><td class="num"><span class="bar-in" style="width:52px"></span> 108%</td><td class="num">14.9%</td></tr>
+          <tr><td>▸ East</td><td class="num">$678.8K</td><td class="num up">▲ 21%</td><td class="num"><span class="bar-in" style="width:49px"></span> 103%</td><td class="num">13.5%</td></tr>
+          <tr><td>▸ Central</td><td class="num">$501.2K</td><td class="num up">▲ 15%</td><td class="num"><span class="bar-in" style="width:47px"></span> 98%</td><td class="num">7.9%</td></tr>
+          <tr><td>▸ South</td><td class="num">$391.7K</td><td class="num down">▼ 4%</td><td class="num"><span class="bar-in" style="width:44px;background:var(--amber)"></span> 92%</td><td class="num">11.9%</td></tr>
+        </table>
+      </div>
+    </div>
+    <div class="footer"><span>Cross-filter: region bar → trend + matrix · Drillthrough: Region → Page 3</span><span>⟲ Reset filters (bookmark)</span></div>
+  </section>
+
+  <!-- ============ PAGE 2 ============ -->
+  <section class="page" id="p2">
+    <div class="hdr">
+      <div><h1>Forecast &amp; Outlook</h1><div class="sub">Six-month sales outlook · exponential smoothing (ETS), 95% CI</div></div>
+      <div class="slicers">
+        <div class="chips"><span class="chip on">All</span><span class="chip">Central</span><span class="chip">East</span><span class="chip">South</span><span class="chip">West</span></div>
+        <div class="dateslicer">Order Date&nbsp; Jan 2014 – Dec 2017</div>
+      </div>
+    </div>
+    <div class="grid" style="grid-template-columns:1fr;grid-template-rows:3fr 2fr">
+      <div class="viz">
+        <h3>Sales Forecast — 6-Month Outlook</h3><div class="cap">Actuals (navy) · Forecast (dotted teal) · shaded 95% confidence band · seasonality = 12</div>
+        <svg id="fcst" viewBox="0 0 1180 260" preserveAspectRatio="none"></svg>
+        <div class="legend"><span><span class="sw" style="background:var(--navy)"></span>Actual</span><span><span class="sw" style="background:var(--teal)"></span>Forecast</span><span><span class="sw" style="background:#BFE6E1"></span>95% CI</span></div>
+      </div>
+      <div class="grid" style="grid-template-columns:2fr 1.2fr 1.4fr">
+        <div class="viz">
+          <h3>Seasonality Profile</h3><div class="cap">Seasonality Index by month · 1.00 = average month</div>
+          <svg id="season" viewBox="0 0 420 130" preserveAspectRatio="none"></svg>
+        </div>
+        <div class="viz slider">
+          <h3>Growth Scenario</h3>
+          <input type="range" min="0" max="30" value="5" id="growth" aria-label="Growth rate percent">
+          <div class="cap">Growth Rate: <b id="gval">5%</b></div>
+          <div class="scenario"><div class="cap">Scenario Sales (next 12 mo)</div><div class="val" id="scen">$769.9K</div></div>
+        </div>
+        <div class="viz">
+          <h3>Methodology &amp; Caveats</h3>
+          <p class="note">Forecast uses Power BI's built-in exponential smoothing with 12-month seasonality and a 95% confidence interval. It assumes historical seasonality holds and includes no promotion or macro drivers. The interval widens with horizon — treat the band, not the line, as the answer. Q4 (Sep/Nov/Dec) consistently runs ~1.3–1.6× an average month.</p>
+        </div>
+      </div>
+    </div>
+    <div class="footer"><span>Forecast recomputes under slicer context — filter to a region for a region-level outlook</span><span>⟲ Reset filters</span></div>
+  </section>
+
+  <!-- ============ PAGE 3 ============ -->
+  <section class="page" id="p3">
+    <div class="hdr">
+      <div><h1>Account &amp; Rep Actions</h1><div class="sub">Prioritized lists for the week · drillthrough target from Page 1</div></div>
+      <div class="slicers">
+        <div class="chips"><span class="chip on">All</span><span class="chip">Central</span><span class="chip">East</span><span class="chip">South</span><span class="chip">West</span></div>
+        <div class="dateslicer">Order Date&nbsp; Jan 2014 – Dec 2017</div>
+      </div>
+    </div>
+    <div class="grid" style="grid-template-columns:1fr 1.2fr;grid-template-rows:1fr 1fr">
+      <div class="viz">
+        <h3>Top 10 Accounts by Revenue</h3><div class="cap">Visual-level Top N filter · tooltip: margin, orders, last order</div>
+        <svg id="top10" viewBox="0 0 420 170" preserveAspectRatio="none"></svg>
+      </div>
+      <div class="viz" style="grid-row:span 2">
+        <h3>Discount vs Profit Diagnostic</h3><div class="cap">Sub-categories · X: Avg Discount % · Y: Total Profit · size: Sales · quadrant at 20% / $0</div>
+        <svg id="scatter" viewBox="0 0 520 330" preserveAspectRatio="none"></svg>
+      </div>
+      <div class="viz">
+        <h3>At-Risk &amp; Dormant Accounts</h3><div class="cap">Account Status ≠ Active · sorted by lapsed revenue</div>
+        <table>
+          <tr><th>Customer</th><th>Segment</th><th class="num">Last Order</th><th class="num">Days</th><th class="num">Sales</th><th>Status</th></tr>
+          <tr><td>Sean Miller</td><td>Home Office</td><td class="num">14-Mar-2017</td><td class="num">291</td><td class="num">$25.0K</td><td><span class="pill dorm">Dormant</span></td></tr>
+          <tr><td>Becky Martin</td><td>Consumer</td><td class="num">02-Jun-2017</td><td class="num">211</td><td class="num">$11.8K</td><td><span class="pill dorm">Dormant</span></td></tr>
+          <tr><td>Clay Ludtke</td><td>Consumer</td><td class="num">21-Sep-2017</td><td class="num">100</td><td class="num">$8.6K</td><td><span class="pill risk">At Risk</span></td></tr>
+          <tr><td>Karen Ferguson</td><td>Corporate</td><td class="num">28-Sep-2017</td><td class="num">93</td><td class="num">$7.9K</td><td><span class="pill risk">At Risk</span></td></tr>
+        </table>
+      </div>
+    </div>
+    <div class="footer"><span>Stretch: decomposition tree (Total Sales by Region ▸ Segment ▸ Category ▸ Sub-Category)</span><span>⟲ Reset filters</span></div>
+  </section>
+</div>
+
+<script>
+// tabs
+document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+  t.classList.add('active'); document.getElementById(t.dataset.p).classList.add('active');
+}));
+const NS="http://www.w3.org/2000/svg";
+function el(n,a){const e=document.createElementNS(NS,n);for(const k in a)e.setAttribute(k,a[k]);return e;}
+// monthly-ish sales shape (illustrative, Q4 spikes)
+const cy=[44,20,55,36,44,53,45,63,87,77,118,96];           // 2017 ($K)
+const py=[18,29,38,34,30,53,39,31,73,59,79,96].map(v=>v*0.9); // 2016-ish
+function line(svg,data,W,H,color,dash,fill){
+  const max=130, pts=data.map((v,i)=>[i/(data.length-1)*W, H-8-(v/max)*(H-20)]);
+  if(fill){const d="M"+pts.map(p=>p.join(",")).join(" L ")+` L ${W},${H} L 0,${H} Z`;svg.appendChild(el("path",{d,fill,stroke:"none"}));}
+  const d="M"+pts.map(p=>p.join(",")).join(" L ");
+  svg.appendChild(el("path",{d,fill:"none",stroke:color,"stroke-width":2.5,"stroke-dasharray":dash||"none"}));
+  return pts;
+}
+// P1 sparkline + CY/PY chart
+line(document.getElementById('spark1'),cy,280,22,"#2E74B5");
+(function(){const s=document.getElementById('cyPy'),W=560,H=300;
+  for(let i=1;i<5;i++)s.appendChild(el("line",{x1:0,y1:H/5*i,x2:W,y2:H/5*i,stroke:"#EFEDEB"}));
+  line(s,py,W,H,"#B3B0AD","6 4");line(s,cy,W,H,"#1F3864");
+  const m=["Jan","Mar","May","Jul","Sep","Nov"];m.forEach((t,i)=>{const x=el("text",{x:i*(W/5.4)+4,y:H-1,"font-size":"11",fill:"#605E5C"});x.textContent=t;s.appendChild(x);});
+})();
+// P1 region bars w/ quota overlay
+(function(){const s=document.getElementById('regBar');
+  const rows=[["West",725,672],["East",679,659],["Central",501,511],["South",392,426]];
+  rows.forEach((r,i)=>{const y=12+i*38,w=r[1]/800*250,q=r[2]/800*250;
+    s.appendChild(el("rect",{x:70,y:y,width:q,height:20,rx:2,fill:"#CBD8EC"}));
+    s.appendChild(el("rect",{x:70,y:y+3,width:w,height:14,rx:2,fill:"#1F3864"}));
+    const t=el("text",{x:64,y:y+15,"font-size":"11","text-anchor":"end",fill:"#252423"});t.textContent=r[0];s.appendChild(t);
+    const v=el("text",{x:74+Math.max(w,q),y:y+15,"font-size":"10",fill:"#605E5C"});v.textContent="$"+r[1]+"K";s.appendChild(v);});
+})();
+// P2 forecast chart
+(function(){const s=document.getElementById('fcst'),W=1180,H=260,max=140;
+  const hist=[...py.map(v=>v*0.75),...py,...cy]; // 36 months
+  const n=hist.length,fN=6;
+  const X=i=>i/(n-1+fN)*W, Y=v=>H-16-(v/max)*(H-30);
+  for(let i=1;i<5;i++)s.appendChild(el("line",{x1:0,y1:H/5*i,x2:W,y2:H/5*i,stroke:"#EFEDEB"}));
+  // CI band
+  const f=[100,68,60,72,55,66],last=hist[n-1];
+  let up="M"+X(n-1)+","+Y(last),lo="";
+  f.forEach((v,i)=>{const sp=(i+1)*6;up+=" L"+X(n+i)+","+Y(v+sp);});
+  for(let i=f.length-1;i>=0;i--){const sp=(i+1)*6;lo+=" L"+X(n+i)+","+Y(Math.max(f[i]-sp,4));}
+  s.appendChild(el("path",{d:up+lo+" Z",fill:"#BFE6E1",opacity:.7}));
+  // history
+  let d="M"+hist.map((v,i)=>X(i)+","+Y(v)).join(" L ");
+  s.appendChild(el("path",{d,fill:"none",stroke:"#1F3864","stroke-width":2}));
+  // forecast line
+  let fd="M"+X(n-1)+","+Y(last)+f.map((v,i)=>" L"+X(n+i)+","+Y(v)).join("");
+  s.appendChild(el("path",{d:fd,fill:"none",stroke:"#1B9E8F","stroke-width":2.5,"stroke-dasharray":"4 5"}));
+  s.appendChild(el("line",{x1:X(n-1),y1:8,x2:X(n-1),y2:H-14,stroke:"#C8860A","stroke-dasharray":"3 3"}));
+  const t=el("text",{x:X(n-1)+6,y:18,"font-size":"11",fill:"#C8860A"});t.textContent="forecast start (Jan 2018)";s.appendChild(t);
+  ["2015","2016","2017"].forEach((yr,i)=>{const tx=el("text",{x:X(i*12)+4,y:H-2,"font-size":"11",fill:"#605E5C"});tx.textContent=yr;s.appendChild(tx);});
+})();
+// P2 seasonality
+(function(){const s=document.getElementById('season'),m=["J","F","M","A","M","J","J","A","S","O","N","D"];
+  const idx=[0.62,0.55,0.95,0.80,0.85,1.02,0.92,1.00,1.45,1.15,1.62,1.55];
+  s.appendChild(el("line",{x1:0,y1:130-1.0*60-8,x2:420,y2:130-1.0*60-8,stroke:"#C8860A","stroke-dasharray":"4 3"}));
+  idx.forEach((v,i)=>{const h=v*60,x=10+i*34;
+    s.appendChild(el("rect",{x,y:130-h-8,width:22,height:h,rx:2,fill:v>=1?"#1F3864":"#C7C4C0"}));
+    const t=el("text",{x:x+11,y:129,"font-size":"9","text-anchor":"middle",fill:"#605E5C"});t.textContent=m[i];s.appendChild(t);});
+})();
+// P2 scenario slider
+const base=733.2;
+document.getElementById('growth').addEventListener('input',e=>{
+  const g=+e.target.value;document.getElementById('gval').textContent=g+"%";
+  document.getElementById('scen').textContent="$"+(base*(1+g/100)).toFixed(1)+"K";
+});
+// P3 top10 bars
+(function(){const s=document.getElementById('top10');
+  const rows=[["Sean Miller",25.0],["Tamara Chand",19.1],["Raymond Buch",15.1],["Tom Ashbrook",14.6],["Adrian Barton",14.5],["Ken Lonsdale",14.2],["Sanjit Chand",14.1],["Hunter Lopez",12.9],["Sanjit Engle",12.2],["Christopher Conant",12.1]];
+  rows.forEach((r,i)=>{const y=4+i*16.5,w=r[1]/26*270;
+    s.appendChild(el("rect",{x:118,y,width:w,height:11,rx:2,fill:"#2E74B5"}));
+    const t=el("text",{x:114,y:y+9.5,"font-size":"9.5","text-anchor":"end",fill:"#252423"});t.textContent=r[0];s.appendChild(t);
+    const v=el("text",{x:122+w,y:y+9.5,"font-size":"9",fill:"#605E5C"});v.textContent="$"+r[1].toFixed(1)+"K";s.appendChild(v);});
+})();
+// P3 scatter
+(function(){const s=document.getElementById('scatter'),W=520,H=330;
+  const X=d=>30+d/0.45*(W-60), Y=p=>H/2-p/60*(H/2-30);
+  s.appendChild(el("line",{x1:30,y1:H/2,x2:W-10,y2:H/2,stroke:"#B3B0AD"}));
+  s.appendChild(el("line",{x1:X(0.20),y1:14,x2:X(0.20),y2:H-24,stroke:"#B3B0AD","stroke-dasharray":"4 3"}));
+  const pts=[["Copiers",0.16,55,20,"#1F3864"],["Phones",0.15,44,26,"#1F3864"],["Accessories",0.08,42,15,"#1F3864"],["Paper",0.07,34,12,"#1F3864"],["Chairs",0.17,27,24,"#1F3864"],["Storage",0.07,21,17,"#1F3864"],["Binders",0.37,30,16,"#C0392B"],["Machines",0.31,3.4,17,"#C8860A"],["Tables",0.26,-17.7,16,"#C0392B"],["Bookcases",0.21,-3.5,12,"#C0392B"],["Supplies",0.08,-1.2,9,"#C8860A"]];
+  pts.forEach(p=>{
+    s.appendChild(el("circle",{cx:X(p[1]),cy:Y(p[2]),r:p[3]/2.2,fill:p[4],opacity:.75}));
+    const t=el("text",{x:X(p[1]),y:Y(p[2])-p[3]/2.2-3,"font-size":"9","text-anchor":"middle",fill:"#605E5C"});t.textContent=p[0];s.appendChild(t);});
+  const q=el("text",{x:X(0.30),y:H-32,"font-size":"10",fill:"#C0392B","font-style":"italic"});q.textContent="high discount, negative profit";s.appendChild(q);
+  const ax=el("text",{x:W/2,y:H-4,"font-size":"10","text-anchor":"middle",fill:"#605E5C"});ax.textContent="Avg Discount % →";s.appendChild(ax);
+})();
+</script>
+</body>
+</html>
