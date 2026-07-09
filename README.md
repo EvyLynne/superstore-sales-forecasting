@@ -1,2 +1,1 @@
-# superstore-sales-forecasting
-Three-page Power BI sales-team report on the public Superstore dataset: star schema, 25-measure DAX layer, quota framework, ETS forecast — built in a 4-hour timebox
+Power BI Project (.pbip) text files live here — save the PBIP from Desktop into this folder inside your clone. See docs/08 §7.
