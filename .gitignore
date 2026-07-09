@@ -1,0 +1,13 @@
+# ── source data: linked, never redistributed ────────
+*.csv
+*.xls
+# ── Power BI local & cache files (PBIP) ─────────────
+**/.pbi/localSettings.json
+**/.pbi/cache.abf
+*.abf
+*.pbix.tmp
+# ── Office/OS clutter ───────────────────────────────
+~$*
+*.tmp
+Thumbs.db
+.DS_Store
