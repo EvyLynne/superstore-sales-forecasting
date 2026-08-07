@@ -20,9 +20,6 @@ Lakehouse with a Direct Lake semantic model.
 
 ![Star schema](assets/model_view.png)
 
-*Screenshots are committed to `assets/` at release; the four links above resolve once
-those files are added.*
-
 ## Highlights
 
 - Single CSV split into a proper star schema — `FactSales` plus `DimProduct`,
