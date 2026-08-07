@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Evaluation Dashboard — Power BI Mockup</title>
+<style>
+  :root{
+    --navy:#1F3864; --navy2:#2E74B5; --teal:#1B9E8F; --amber:#C8860A; --red:#C0392B; --green:#1E7B34;
+    --canvas:#FAFAFA; --card:#FFFFFF; --ink:#252423; --sub:#605E5C; --line:#E1DFDD;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"Segoe UI",Calibri,Arial,sans-serif;background:#ECEAE7;color:var(--ink);padding:24px}
+  .frame{max-width:1320px;margin:0 auto}
+  .mocknote{font-size:12px;color:var(--sub);text-align:center;margin-bottom:10px;letter-spacing:.4px}
+  .tabs{display:flex;gap:2px;margin-bottom:0}
+  .tab{padding:10px 22px;background:#D8D5D1;border:none;border-radius:6px 6px 0 0;font-size:13px;font-weight:600;color:var(--sub);cursor:pointer;font-family:inherit}
+  .tab.active{background:var(--navy);color:#fff}
+  .page{display:none;background:var(--canvas);border:1px solid var(--line);border-radius:0 8px 8px 8px;padding:14px;aspect-ratio:16/9;min-height:660px;flex-direction:column;gap:10px}
+  .page.active{display:flex}
+  /* header band */
+  .hdr{display:flex;align-items:center;justify-content:space-between;background:var(--navy);border-radius:6px;padding:10px 16px}
+  .hdr h1{font-size:17px;color:#fff;font-weight:600}
+  .hdr .sub{font-size:11px;color:#B9C7DE;font-weight:400;margin-top:2px}
+  .slicers{display:flex;gap:10px;align-items:center}
+  .runslicer{font-size:11px;color:#CBD8EC;background:#33507F;padding:5px 12px;border-radius:4px}
+  .runslicer b{color:#fff;font-weight:600}
+  .resetbtn{font-size:11px;color:#CBD8EC;background:#33507F;border:1px solid #4A6699;padding:4px 10px;border-radius:4px;cursor:default}
+  /* cards */
+  .kpirow{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  .kpi{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:10px 14px 8px}
+  .kpi .lbl{font-size:11px;color:var(--sub);text-transform:uppercase;letter-spacing:.5px}
+  .kpi .val{font-size:26px;font-weight:600;margin:2px 0}
+  .kpi .ref{font-size:11.5px}
+  .up{color:var(--green)} .down{color:var(--red)} .warn{color:var(--amber)} .ok{color:var(--green)}
+  .spark{margin-top:4px}
+  /* grid + visuals */
+  .grid{display:grid;gap:10px;flex:1;min-height:0}
+  .viz{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:8px 12px;display:flex;flex-direction:column;min-height:0}
+  .viz h3{font-size:12.5px;font-weight:600;color:var(--ink);margin-bottom:2px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .viz .cap{font-size:10.5px;color:var(--sub);margin-bottom:4px}
+  .viz svg{flex:1;width:100%;min-height:0}
+  .scroll{overflow:auto;min-height:0;flex:1}
+  .legend{display:flex;gap:14px;font-size:10.5px;color:var(--sub);margin-top:2px;flex-wrap:wrap}
+  .sw{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:4px;vertical-align:-1px}
+  .spec{font-size:8.5px;font-weight:600;color:var(--sub);background:#EFEDEB;border:1px solid var(--line);border-radius:8px;padding:1px 7px;letter-spacing:.3px;white-space:nowrap;text-transform:uppercase}
+  table{width:100%;border-collapse:collapse;font-size:11px}
+  th{text-align:left;color:var(--sub);font-weight:600;border-bottom:2px solid var(--line);padding:4px 6px;position:sticky;top:0;background:var(--card)}
+  td{padding:4px 6px;border-bottom:1px solid #F0EEEC;vertical-align:top}
+  td.num,th.num{text-align:right}
+  td.mono{font-family:Consolas,"Courier New",monospace;font-size:10.5px}
+  .bar-in{height:10px;background:var(--navy2);border-radius:2px;display:inline-block;vertical-align:middle}
+  .pill{padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600;color:#fff;display:inline-block}
+  .pill.pass{background:var(--green)} .pill.fail{background:var(--red)} .pill.warnp{background:var(--amber)}
+  .sev{display:inline-block;width:18px;height:18px;line-height:18px;text-align:center;border-radius:3px;font-size:10px;font-weight:700;color:#fff}
+  .sev.s3{background:var(--red)} .sev.s2{background:var(--amber)} .sev.s1{background:#8A8886}
+  .chipset{display:flex;flex-wrap:wrap;gap:5px}
+  .fchip{font-size:10.5px;padding:3px 10px;border-radius:11px;background:#EFEDEB;border:1px solid var(--line);color:var(--sub);cursor:default}
+  .fchip.on{background:var(--navy);border-color:var(--navy);color:#fff;font-weight:600}
+  .note{font-size:11px;color:var(--sub);line-height:1.5}
+  .note b{color:var(--ink)}
+  .footer{font-size:10px;color:var(--sub);display:flex;justify-content:space-between;padding:0 4px}
+  .runcards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .runcard{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:8px 12px}
+  .runcard .lbl{font-size:10px;color:var(--sub);text-transform:uppercase;letter-spacing:.5px}
+  .runcard .val{font-size:15px;font-weight:600;margin-top:2px}
+  @media (max-width:900px){ .page{aspect-ratio:auto} .kpirow,.grid,.runcards{grid-template-columns:1fr !important} }
+</style>
+</head>
+<body>
+<div class="frame">
+  <div class="mocknote">DOCUMENT 24 · STATIC MOCKUP — Evaluation Dashboard · companion to document 22 §8 · illustrative data across four evaluation runs</div>
+  <div class="tabs">
+    <button class="tab active" data-p="e1">1 · Evaluation Scorecard</button>
+    <button class="tab" data-p="e2">2 · Findings Detail</button>
+    <button class="tab" data-p="e3">3 · Conformance &amp; Performance</button>
+  </div>
+
+  <!-- ============ PAGE 1 — EVALUATION SCORECARD ============ -->
+  <section class="page active" id="e1">
+    <div class="hdr">
+      <div><h1>Evaluation Scorecard</h1><div class="sub">Retail_Sales_Forecasting · specification-as-tests · Direct Lake over EvaluationLake</div></div>
+      <div class="slicers">
+        <div class="runslicer">Run&nbsp; <b>31 Jul 2026 13:42</b> &nbsp;(latest of 4)</div>
+        <div class="resetbtn">⟲ Reset filters</div>
+      </div>
+    </div>
+    <div class="kpirow">
+      <div class="kpi">
+        <div class="lbl">Conformance Pass Rate</div>
+        <div class="val" style="color:var(--amber)">90%</div>
+        <div class="ref warn">2 of 20 assertions failing</div>
+        <svg class="spark" width="100%" height="22" id="sparkConf"></svg>
+      </div>
+      <div class="kpi">
+        <div class="lbl">BPA Findings</div>
+        <div class="val">9</div>
+        <div class="ref up">▼ 3 vs prior run</div>
+        <svg class="spark" width="100%" height="22" id="sparkBpa"></svg>
+      </div>
+      <div class="kpi">
+        <div class="lbl">Measure Validation</div>
+        <div class="val" style="color:var(--green)">0</div>
+        <div class="ref ok">failing · 4 of 4 measures verified</div>
+      </div>
+      <div class="kpi">
+        <div class="lbl">Slowest Visual</div>
+        <div class="val" style="color:var(--amber)">1,840<span style="font-size:14px;font-weight:400"> ms</span></div>
+        <div class="ref warn">Decomposition tree · Page 3</div>
+      </div>
+    </div>
+    <div class="grid" style="grid-template-columns:2fr 1.25fr 1.25fr;grid-template-rows:1fr 1fr">
+      <div class="viz" style="grid-row:span 2">
+        <h3>Findings over time <span class="spec">hero 1.5</span></h3>
+        <div class="cap">BPA findings (navy) · failing assertions (amber) · one point per evaluation run</div>
+        <svg id="trend" viewBox="0 0 560 300" preserveAspectRatio="none"></svg>
+        <div class="legend">
+          <span><span class="sw" style="background:var(--navy)"></span>BPA Findings</span>
+          <span><span class="sw" style="background:var(--amber)"></span>Assertions Failing</span>
+          <span style="color:var(--green)">▼ 38 findings closed since baseline</span>
+        </div>
+      </div>
+      <div class="viz">
+        <h3>Findings by severity <span class="spec">1.6</span></h3>
+        <div class="cap">Stacked by run · error / warning / info</div>
+        <svg id="sevCol" viewBox="0 0 340 160" preserveAspectRatio="none"></svg>
+        <div class="legend">
+          <span><span class="sw" style="background:var(--red)"></span>Error</span>
+          <span><span class="sw" style="background:var(--amber)"></span>Warning</span>
+          <span><span class="sw" style="background:#8A8886"></span>Info</span>
+        </div>
+      </div>
+      <div class="viz">
+        <h3>Findings by category <span class="spec">1.7</span></h3>
+        <div class="cap">Latest run · Best Practice Analyzer rule category</div>
+        <svg id="catBar" viewBox="0 0 340 160" preserveAspectRatio="none"></svg>
+      </div>
+      <div class="viz" style="grid-column:2 / span 2">
+        <h3>Conformance by category <span class="spec">1.8</span></h3>
+        <div class="cap">Matrix · document 13 assertions, latest run</div>
+        <table>
+          <tr><th>Category</th><th class="num">Pass</th><th class="num">Fail</th><th class="num">Total</th><th class="num">Rate</th></tr>
+          <tr><td>Layout</td><td class="num">4</td><td class="num">0</td><td class="num">4</td><td class="num"><span class="bar-in" style="width:56px"></span> 100%</td></tr>
+          <tr><td>Visual bindings</td><td class="num">6</td><td class="num">0</td><td class="num">6</td><td class="num"><span class="bar-in" style="width:56px"></span> 100%</td></tr>
+          <tr><td>Filters &amp; interactions</td><td class="num">4</td><td class="num">1</td><td class="num">5</td><td class="num"><span class="bar-in" style="width:45px;background:var(--amber)"></span> 80%</td></tr>
+          <tr><td>Navigation</td><td class="num">2</td><td class="num">1</td><td class="num">3</td><td class="num"><span class="bar-in" style="width:37px;background:var(--amber)"></span> 67%</td></tr>
+          <tr><td>Performance</td><td class="num">2</td><td class="num">0</td><td class="num">2</td><td class="num"><span class="bar-in" style="width:56px"></span> 100%</td></tr>
+        </table>
+      </div>
+    </div>
+    <div class="footer">
+      <span>Run slicer syncs across all three pages · every page defaults to the latest run</span>
+      <span>Direct Lake — new runs appear without a refresh</span>
+    </div>
+  </section>
+
+  <!-- ============ PAGE 2 — FINDINGS DETAIL ============ -->
+  <section class="page" id="e2">
+    <div class="hdr">
+      <div><h1>Findings Detail</h1><div class="sub">What exactly is wrong — and which findings were accepted rather than fixed</div></div>
+      <div class="slicers">
+        <div class="runslicer">Run&nbsp; <b>31 Jul 2026 13:42</b></div>
+        <div class="resetbtn">⟲ Reset filters</div>
+      </div>
+    </div>
+    <div class="grid" style="grid-template-columns:2.3fr 1fr;grid-template-rows:auto 1fr auto">
+      <div class="viz" style="grid-column:1 / span 2">
+        <h3 style="margin-bottom:6px">Filters <span class="spec">2.2 / 2.3</span></h3>
+        <div style="display:flex;gap:22px;flex-wrap:wrap">
+          <div>
+            <div class="cap">Severity</div>
+            <div class="chipset"><span class="fchip on">All</span><span class="fchip">Error</span><span class="fchip">Warning</span><span class="fchip">Info</span></div>
+          </div>
+          <div>
+            <div class="cap">Category</div>
+            <div class="chipset"><span class="fchip on">All</span><span class="fchip">Performance</span><span class="fchip">Formatting</span><span class="fchip">DAX Expressions</span><span class="fchip">Maintenance</span><span class="fchip">Naming</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="viz">
+        <h3>Findings <span class="spec">2.1</span></h3>
+        <div class="cap">Best Practice Analyzer · latest run · 9 findings</div>
+        <div class="scroll">
+        <table>
+          <tr><th>Sev</th><th>Rule</th><th>Object</th><th>Category</th><th>Triage</th></tr>
+          <tr><td><span class="sev s2">2</span></td><td>Reduce usage of long-length high-cardinality columns</td><td class="mono">DimProduct[ProductKey]</td><td>Performance</td><td><span class="pill warnp">Accepted</span></td></tr>
+          <tr><td><span class="sev s2">2</span></td><td>Reduce usage of long-length high-cardinality columns</td><td class="mono">DimGeography[GeographyKey]</td><td>Performance</td><td><span class="pill warnp">Accepted</span></td></tr>
+          <tr><td><span class="sev s2">2</span></td><td>Reduce usage of long-length high-cardinality columns</td><td class="mono">FactSales[ProductKey]</td><td>Performance</td><td><span class="pill warnp">Accepted</span></td></tr>
+          <tr><td><span class="sev s1">1</span></td><td>Set IsAvailableInMdx to false on non-attribute columns</td><td class="mono">FactSales[Sales]</td><td>Performance</td><td><span class="pill warnp">Accepted</span></td></tr>
+          <tr><td><span class="sev s1">1</span></td><td>Set IsAvailableInMdx to false on non-attribute columns</td><td class="mono">FactSales[Profit]</td><td>Performance</td><td><span class="pill warnp">Accepted</span></td></tr>
+          <tr><td><span class="sev s1">1</span></td><td>Add data category for columns</td><td class="mono">DimGeography[State]</td><td>Formatting</td><td><span class="pill fail">Open</span></td></tr>
+          <tr><td><span class="sev s1">1</span></td><td>Add data category for columns</td><td class="mono">DimGeography[Postal Code]</td><td>Formatting</td><td><span class="pill fail">Open</span></td></tr>
+          <tr><td><span class="sev s1">1</span></td><td>Objects should not start with a space</td><td class="mono">_Measures</td><td>Naming Conventions</td><td><span class="pill warnp">Accepted</span></td></tr>
+          <tr><td><span class="sev s1">1</span></td><td>Avoid excessive use of unused columns</td><td class="mono">DimProduct[Product ID]</td><td>Maintenance</td><td><span class="pill fail">Open</span></td></tr>
+        </table>
+        </div>
+      </div>
+      <div class="viz">
+        <h3>Findings by rule <span class="spec">2.4</span></h3>
+        <div class="cap">Top 15 by count · latest run</div>
+        <svg id="ruleBar" viewBox="0 0 320 220" preserveAspectRatio="none"></svg>
+      </div>
+      <div class="viz" style="grid-column:1 / span 2">
+        <h3>Triage note <span class="spec">2.5</span></h3>
+        <div class="note">
+          <b>Accepted, not fixed.</b> The three high-cardinality findings are the composite keys — <span class="mono">ProductKey</span> = Product&nbsp;ID&nbsp;|&nbsp;Product&nbsp;Name and <span class="mono">GeographyKey</span> = Postal&nbsp;Code&nbsp;|&nbsp;City. Collapsing them to integers would save roughly 40&nbsp;kB on a 9,994-row model and make every relationship unreadable in the diagram view. The rule is written for hundred-million-row fact tables; it does not apply here.
+          <b>IsAvailableInMdx</b> matters for Excel MDX clients, which this project has none of.
+          <b>Objects should not start with a space</b> fires on the <span class="mono">_Measures</span> underscore convention, which is deliberate — it sorts the measure group to the top of the field list.
+          <b>Open items</b> are the two missing geography data categories (a real defect, worth fixing so map visuals bind correctly) and <span class="mono">DimProduct[Product&nbsp;ID]</span>, retained pending a decision on whether the business key stays exposed.
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+      <span>Findings table filtered by the severity and category slicers · run slicer synced from Page 1</span>
+      <span>Triage commentary is the portfolio signal — not the green ticks</span>
+    </div>
+  </section>
+
+  <!-- ============ PAGE 3 — CONFORMANCE & PERFORMANCE ============ -->
+  <section class="page" id="e3">
+    <div class="hdr">
+      <div><h1>Conformance &amp; Performance</h1><div class="sub">Document 13 specification restated as assertions · render timings from Performance Analyzer</div></div>
+      <div class="slicers">
+        <div class="runslicer">Run&nbsp; <b>31 Jul 2026 13:42</b></div>
+        <div class="resetbtn">⟲ Reset filters</div>
+      </div>
+    </div>
+    <div class="runcards">
+      <div class="runcard"><div class="lbl">Latest Run</div><div class="val">31-Jul-2026 13:42</div></div>
+      <div class="runcard"><div class="lbl">semantic-link-labs</div><div class="val mono">0.11.2</div></div>
+      <div class="runcard"><div class="lbl">Notes</div><div class="val" style="font-weight:400;font-size:13px">post-remediation baseline</div></div>
+    </div>
+    <div class="grid" style="grid-template-columns:1.45fr 1fr;grid-template-rows:1.35fr 1fr">
+      <div class="viz" style="grid-row:span 2">
+        <h3>Specification scorecard <span class="spec">3.1</span></h3>
+        <div class="cap">20 assertions from document 13 · 18 pass · 2 fail</div>
+        <div class="scroll">
+        <table>
+          <tr><th>#</th><th>Assertion</th><th>Expected</th><th>Actual</th><th>Result</th></tr>
+          <tr><td>1</td><td>Canvas 1280 × 720 on all pages</td><td class="mono">True</td><td class="mono">True</td><td><span class="pill pass">Pass</span></td></tr>
+          <tr><td>2</td><td>Theme JSON applied (navy #1F3864)</td><td class="mono">True</td><td class="mono">True</td><td><span class="pill pass">Pass</span></td></tr>
+          <tr><td>3</td><td>Page visual counts 8 / 6 / 4</td><td class="mono">8,6,4</td><td class="mono">8,6,4</td><td><span class="pill pass">Pass</span></td></tr>
+          <tr><td>4</td><td>Cards 1.1/1.2/1.4 bind reference labels</td><td class="mono">3</td><td class="mono">3</td><td><span class="pill pass">Pass</span></td></tr>
+          <tr><td>5</td><td>Card 1.4 field-value colour measure</td><td class="mono">True</td><td class="mono">True</td><td><span class="pill pass">Pass</span></td></tr>
+          <tr><td>6</td><td>1.5 plots Total Sales + Sales PY, PY dashed</td><td class="mono">True</td><td class="mono">True</td><td><span class="pill pass">Pass</span></td></tr>
+          <tr><td>7</td><td>1.6 overlays Quota on Sales by Region</td><td class="mono">True</td><td class="mono">True</td><td><span class="pill pass">Pass</span></td></tr>
+          <tr><td>8</td><td>1.8 matrix has data bars and icons</td><td class="mono">True</td><td class="mono">True</td><td><span class="pill pass">Pass</span></td></tr>
+          <tr><td>9</td><td>Forecast: len 6, seasonality 12, CI 95%</td><td class="mono">6/12/95</td><td class="mono">6/12/95</td><td><span class="pill pass">Pass</span></td></tr>
+          <tr><td>10</td><td>2.3 constant line at 1.00</td><td class="mono">1.0</td><td class="mono">1.0</td><td><span class="pill pass">Pass</span></td></tr>
+          <tr><td>11</td><td>Slicer 2.4 bound to 'Growth Rate'</td><td class="mono">True</td><td class="mono">True</td><td><span class="pill pass">Pass</span></td></tr>
+          <tr style="background:#FDF1F0"><td>12</td><td>3.1 carries TopN filter, 10 by Total Sales</td><td class="mono">TopN 10</td><td class="mono">None</td><td><span class="pill fail">Fail</span></td></tr>
+          <tr><td>13</td><td>3.2 filters Account Status &lt;&gt; 'Active'</td><td class="mono">True</td><td class="mono">True</td><td><span class="pill pass">Pass</span></td></tr>
+          <tr><td>14</td><td>3.3 quadrant lines at x = 20%, y = 0</td><td class="mono">0.2, 0</td><td class="mono">0.2, 0</td><td><span class="pill pass">Pass</span></td></tr>
+          <tr><td>15</td><td>Region + Order Date slicers sync all pages</td><td class="mono">True</td><td class="mono">True</td><td><span class="pill pass">Pass</span></td></tr>
+          <tr style="background:#FDF1F0"><td>16</td><td>Reset-filters bookmark, Data unticked</td><td class="mono">True</td><td class="mono">False</td><td><span class="pill fail">Fail</span></td></tr>
+          <tr><td>17</td><td>Page 3 drillthrough on Region and State</td><td class="mono">2</td><td class="mono">2</td><td><span class="pill pass">Pass</span></td></tr>
+          <tr><td>18</td><td>1.6 cross-filters rather than highlights</td><td class="mono">Filter</td><td class="mono">Filter</td><td><span class="pill pass">Pass</span></td></tr>
+          <tr><td>19</td><td>No default auto-generated visual titles</td><td class="mono">0</td><td class="mono">0</td><td><span class="pill pass">Pass</span></td></tr>
+          <tr><td>20</td><td>Every page renders under 3 s cold</td><td class="mono">&lt;3000</td><td class="mono">2410</td><td><span class="pill pass">Pass</span></td></tr>
+        </table>
+        </div>
+      </div>
+      <div class="viz">
+        <h3>Render time by visual <span class="spec">3.2 / 3.3</span></h3>
+        <div class="cap">DAX (navy) vs render (pale) · constant lines at 500 and 2000 ms</div>
+        <svg id="perfBar" viewBox="0 0 340 190" preserveAspectRatio="none"></svg>
+        <div class="legend">
+          <span><span class="sw" style="background:var(--navy)"></span>DAX ms</span>
+          <span><span class="sw" style="background:#CBD8EC"></span>Render ms</span>
+          <span><span class="sw" style="background:var(--amber)"></span>500 ms</span>
+          <span><span class="sw" style="background:var(--red)"></span>2000 ms</span>
+        </div>
+      </div>
+      <div class="viz">
+        <h3>Measure validation <span class="spec">3.4</span></h3>
+        <div class="cap">Known-good figures from document 21 · asserted, not eyeballed</div>
+        <table>
+          <tr><th>Measure</th><th class="num">Expected</th><th class="num">Actual</th><th class="num">Var.</th><th>Result</th></tr>
+          <tr><td>Total Sales</td><td class="num mono">2,297,200.86</td><td class="num mono">2,297,200.86</td><td class="num mono">0.00</td><td><span class="pill pass">Pass</span></td></tr>
+          <tr><td>Total Profit</td><td class="num mono">286,397.02</td><td class="num mono">286,397.02</td><td class="num mono">0.00</td><td><span class="pill pass">Pass</span></td></tr>
+          <tr><td>Order Count</td><td class="num mono">5,009</td><td class="num mono">5,009</td><td class="num mono">0</td><td><span class="pill pass">Pass</span></td></tr>
+          <tr><td>Active Customers</td><td class="num mono">793</td><td class="num mono">793</td><td class="num mono">0</td><td><span class="pill pass">Pass</span></td></tr>
+        </table>
+        <div class="note" style="margin-top:6px;font-size:10.5px">Edge cases also asserted: 2014 returns blank — not zero — for Sales PY and for every quota measure.</div>
+      </div>
+    </div>
+    <div class="footer">
+      <span>Failing assertions 12 and 16 are open defects, not accepted exceptions</span>
+      <span>Timings captured in Desktop; JSON export read back into the notebook</span>
+    </div>
+  </section>
+</div>
+
+<script>
+(function(){
+  // ---------- tabs ----------
+  document.querySelectorAll('.tab').forEach(function(t){
+    t.addEventListener('click', function(){
+      document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('active');});
+      document.querySelectorAll('.page').forEach(function(x){x.classList.remove('active');});
+      t.classList.add('active');
+      document.getElementById(t.dataset.p).classList.add('active');
+    });
+  });
+
+  var NAVY='#1F3864', PALE='#CBD8EC', AMBER='#C8860A', RED='#C0392B', GREY='#8A8886', SUB='#605E5C', LINE='#E1DFDD';
+  function el(n,a){var e=document.createElementNS('http://www.w3.org/2000/svg',n);for(var k in a)e.setAttribute(k,a[k]);return e;}
+  function txt(x,y,s,o){o=o||{};var t=el('text',{x:x,y:y,fill:o.fill||SUB,'font-size':o.size||10,'text-anchor':o.anchor||'start','font-weight':o.weight||400,'font-family':'Segoe UI, Arial, sans-serif'});t.textContent=s;return t;}
+
+  // ---------- data (illustrative) ----------
+  var runs=['30 Jul 09:15','30 Jul 14:40','31 Jul 08:05','31 Jul 13:42'];
+  var bpa=[47,19,12,9];
+  var failing=[9,4,3,2];
+  var sev={err:[6,1,0,0], warn:[18,8,5,3], info:[23,10,7,6]};
+
+  // ---------- spark lines on cards ----------
+  function spark(id, vals, color, invert){
+    var svg=document.getElementById(id); if(!svg) return;
+    var W=200,H=22; svg.setAttribute('viewBox','0 0 '+W+' '+H); svg.setAttribute('preserveAspectRatio','none');
+    var mx=Math.max.apply(null,vals), mn=Math.min.apply(null,vals), rg=(mx-mn)||1;
+    var pts=vals.map(function(v,i){
+      var x=(i/(vals.length-1))*(W-4)+2;
+      var y=H-3-((v-mn)/rg)*(H-8);
+      return x+','+y;
+    }).join(' ');
+    svg.appendChild(el('polyline',{points:pts,fill:'none',stroke:color,'stroke-width':1.6,'stroke-linejoin':'round'}));
+    var lastx=W-2, lasty=H-3-((vals[vals.length-1]-mn)/rg)*(H-8);
+    svg.appendChild(el('circle',{cx:lastx,cy:lasty,r:2.2,fill:color}));
+  }
+  spark('sparkConf',[55,80,85,90],AMBER);
+  spark('sparkBpa',bpa,NAVY);
+
+  // ---------- 1.5 findings over time ----------
+  (function(){
+    var svg=document.getElementById('trend'); if(!svg) return;
+    var W=560,H=300,L=42,R=14,T=16,B=34;
+    var pw=W-L-R, ph=H-T-B, mx=50;
+    // gridlines
+    for(var g=0; g<=5; g++){
+      var y=T+ph-(g/5)*ph;
+      svg.appendChild(el('line',{x1:L,y1:y,x2:W-R,y2:y,stroke:LINE,'stroke-width':1}));
+      svg.appendChild(txt(L-6,y+3,String(g*10),{anchor:'end',size:10}));
+    }
+    function px(i){return L+(i/(runs.length-1))*pw;}
+    function py(v){return T+ph-(v/mx)*ph;}
+    // area under bpa
+    var area='M'+px(0)+','+py(bpa[0]);
+    bpa.forEach(function(v,i){ if(i) area+=' L'+px(i)+','+py(v); });
+    area+=' L'+px(bpa.length-1)+','+(T+ph)+' L'+px(0)+','+(T+ph)+' Z';
+    svg.appendChild(el('path',{d:area,fill:NAVY,opacity:.08}));
+    // lines
+    [[bpa,NAVY],[failing,AMBER]].forEach(function(s){
+      var pts=s[0].map(function(v,i){return px(i)+','+py(v);}).join(' ');
+      svg.appendChild(el('polyline',{points:pts,fill:'none',stroke:s[1],'stroke-width':2.4,'stroke-linejoin':'round'}));
+      s[0].forEach(function(v,i){
+        svg.appendChild(el('circle',{cx:px(i),cy:py(v),r:3.6,fill:'#fff',stroke:s[1],'stroke-width':2}));
+      });
+    });
+    // value labels on bpa
+    bpa.forEach(function(v,i){ svg.appendChild(txt(px(i),py(v)-9,String(v),{anchor:'middle',size:11,weight:600,fill:NAVY})); });
+    failing.forEach(function(v,i){ svg.appendChild(txt(px(i),py(v)+16,String(v),{anchor:'middle',size:10,weight:600,fill:AMBER})); });
+    // x labels
+    runs.forEach(function(r,i){ svg.appendChild(txt(px(i),H-14,r,{anchor:'middle',size:10})); });
+    // annotation
+    svg.appendChild(txt(px(1)+6,T+34,'remediation applied',{size:10,fill:SUB,weight:600}));
+    svg.appendChild(el('line',{x1:px(1),y1:T+6,x2:px(1),y2:T+ph,stroke:SUB,'stroke-width':1,'stroke-dasharray':'3,3',opacity:.55}));
+  })();
+
+  // ---------- 1.6 findings by severity ----------
+  (function(){
+    var svg=document.getElementById('sevCol'); if(!svg) return;
+    var W=340,H=160,L=26,R=8,T=10,B=26, pw=W-L-R, ph=H-T-B, mx=50;
+    for(var g=0; g<=2; g++){
+      var y=T+ph-(g/2)*ph;
+      svg.appendChild(el('line',{x1:L,y1:y,x2:W-R,y2:y,stroke:LINE,'stroke-width':1}));
+      svg.appendChild(txt(L-5,y+3,String(g*25),{anchor:'end',size:9}));
+    }
+    var bw=pw/runs.length*0.52;
+    runs.forEach(function(r,i){
+      var cx=L+(i+0.5)*(pw/runs.length), y0=T+ph;
+      [[sev.info[i],GREY],[sev.warn[i],AMBER],[sev.err[i],RED]].forEach(function(s){
+        var h=(s[0]/mx)*ph; y0-=h;
+        if(h>0) svg.appendChild(el('rect',{x:cx-bw/2,y:y0,width:bw,height:h,fill:s[1],rx:1}));
+      });
+      svg.appendChild(txt(cx,H-12,r.split(' ')[0]+' '+r.split(' ')[1],{anchor:'middle',size:8.5}));
+      svg.appendChild(txt(cx,y0-4,String(sev.err[i]+sev.warn[i]+sev.info[i]),{anchor:'middle',size:9.5,weight:600,fill:'#252423'}));
+    });
+  })();
+
+  // ---------- 1.7 findings by category ----------
+  (function(){
+    var svg=document.getElementById('catBar'); if(!svg) return;
+    var d=[['Performance',5],['Formatting',2],['Maintenance',1],['Naming',1]];
+    var W=340,H=160,L=88,R=26,T=8,B=8, pw=W-L-R, ph=H-T-B, mx=6;
+    var bh=ph/d.length*0.62;
+    d.forEach(function(r,i){
+      var cy=T+(i+0.5)*(ph/d.length), w=(r[1]/mx)*pw;
+      svg.appendChild(el('rect',{x:L,y:cy-bh/2,width:w,height:bh,fill:NAVY,rx:1}));
+      svg.appendChild(txt(L-6,cy+3.5,r[0],{anchor:'end',size:10}));
+      svg.appendChild(txt(L+w+5,cy+3.5,String(r[1]),{size:10,weight:600,fill:'#252423'}));
+    });
+  })();
+
+  // ---------- 2.4 findings by rule ----------
+  (function(){
+    var svg=document.getElementById('ruleBar'); if(!svg) return;
+    var d=[['High-cardinality column',3],['IsAvailableInMdx',2],['Add data category',2],['Unused column',1],['Leading space in name',1]];
+    var W=320,H=220,L=118,R=24,T=8,B=8, pw=W-L-R, ph=H-T-B, mx=4;
+    var bh=ph/d.length*0.55;
+    d.forEach(function(r,i){
+      var cy=T+(i+0.5)*(ph/d.length), w=(r[1]/mx)*pw;
+      svg.appendChild(el('rect',{x:L,y:cy-bh/2,width:w,height:bh,fill:NAVY,rx:1}));
+      svg.appendChild(txt(L-6,cy+3.5,r[0],{anchor:'end',size:9.5}));
+      svg.appendChild(txt(L+w+5,cy+3.5,String(r[1]),{size:10,weight:600,fill:'#252423'}));
+    });
+  })();
+
+  // ---------- 3.2 / 3.3 render time ----------
+  (function(){
+    var svg=document.getElementById('perfBar'); if(!svg) return;
+    var d=[['Decomposition tree',1180,660],['Top-10 customers',540,180],['Discount vs profit',300,210],['Sales vs PY line',240,150],['Regional matrix',180,140]];
+    var W=340,H=190,L=104,R=30,T=10,B=20, pw=W-L-R, ph=H-T-B, mx=2500;
+    // constant lines
+    [[500,AMBER],[2000,RED]].forEach(function(c){
+      var x=L+(c[0]/mx)*pw;
+      svg.appendChild(el('line',{x1:x,y1:T,x2:x,y2:T+ph,stroke:c[1],'stroke-width':1.2,'stroke-dasharray':'4,3'}));
+      svg.appendChild(txt(x,T+ph+14,String(c[0]),{anchor:'middle',size:8.5,fill:c[1],weight:600}));
+    });
+    var bh=ph/d.length*0.58;
+    d.forEach(function(r,i){
+      var cy=T+(i+0.5)*(ph/d.length);
+      var wd=(r[1]/mx)*pw, wr=(r[2]/mx)*pw;
+      svg.appendChild(el('rect',{x:L,y:cy-bh/2,width:wd,height:bh,fill:NAVY,rx:1}));
+      svg.appendChild(el('rect',{x:L+wd,y:cy-bh/2,width:wr,height:bh,fill:PALE,rx:1}));
+      svg.appendChild(txt(L-6,cy+3.5,r[0],{anchor:'end',size:9.5}));
+      var tot=r[1]+r[2];
+      svg.appendChild(txt(L+wd+wr+4,cy+3.5,tot.toLocaleString(),{size:9.5,weight:600,fill:tot>2000?RED:(tot>500?AMBER:'#252423')}));
+    });
+  })();
+})();
+</script>
+</body>
+</html>
