@@ -1,0 +1,16 @@
+{
+  "name": "Superstore Sales Theme",
+  "dataColors": ["#1F3864", "#2E74B5", "#1B9E8F", "#C8860A", "#C0392B", "#1E7B34", "#B3B0AD", "#7A9CC6"],
+  "background": "#FFFFFF",
+  "foreground": "#252423",
+  "tableAccent": "#1F3864",
+  "visualStyles": {
+    "*": {
+      "*": {
+        "background": [{ "color": { "solid": { "color": "#FFFFFF" } }, "transparency": 0 }],
+        "border": [{ "show": true, "color": { "solid": { "color": "#E1DFDD" } }, "radius": 6 }],
+        "title": [{ "fontSize": 12, "fontColor": { "solid": { "color": "#252423" } }, "bold": true }]
+      }
+    }
+  }
+}
