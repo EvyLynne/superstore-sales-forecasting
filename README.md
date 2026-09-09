@@ -64,7 +64,6 @@ blocks — 01–19 build, 20–29 evaluation, 30+ platform — and are never reu
 | 21 | `21_Model_Evaluation_Report.docx` | Dated audit: nine defects found and fixed, documentation errors corrected |
 | 22 | `22_Evaluation_Framework.docx` | The evaluation runbook and the dashboard that publishes it — specification as executable tests |
 | 24 | `24_Evaluation_Dashboard_Mockup.html` | Interactive static mockup of the three evaluation dashboard pages |
-| 30 | `30_Fabric_Lakehouse_Migration_Guide.docx` | Migrating the solution to a Fabric Lakehouse with a Direct Lake model |
 
 The two HTML mockups render in the browser straight from the raw file — no
 build step, no dependencies.
@@ -86,8 +85,7 @@ document 23. Document 22 §1.2 records the merge.
 | `theme/` | Report theme JSON |
 | `assets/` | Page and model screenshots |
 
-## Built in a 4-hour timebox
-
+ 
 Scoping notes and cut-order guardrails are documented in `docs/` — deliberate
 prioritization under constraint is part of the demonstration.
 
