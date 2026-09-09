@@ -4,12 +4,6 @@ Three-page sales-team report on the public Superstore dataset:
 star-schema model, 34-measure DAX layer, Region×Month quota framework,
 6-month ETS forecast with 95% CI — built in a deliberate 4-hour timebox.
 
-The repository also carries the evaluation layer — the model audit and its
-remediation record, the runbook that turns the written specification into
-executable tests, and the dashboard that publishes the results — plus a
-companion guide for migrating the whole solution to a Microsoft Fabric
-Lakehouse with a Direct Lake semantic model.
-
 ## Report pages
 
 ![Sales Performance](assets/page1_sales_performance.png)
