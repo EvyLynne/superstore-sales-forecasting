@@ -11,3 +11,9 @@
 *.tmp
 Thumbs.db
 .DS_Store
+
+# local working files, not for the repository
+_backup_*/
+_sync/
+20b_Data_Dictionary.xlsx
+*.bak
