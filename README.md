@@ -2,7 +2,7 @@
 
 Three-page sales-team report on the public Superstore dataset:
 star-schema model, 34-measure DAX layer, Region×Month quota framework,
-6-month ETS forecast with 95% CI — built in a deliberate 4-hour timebox.
+6-month ETS forecast with 95% CI.
 
 ## Report pages
 
@@ -54,7 +54,7 @@ blocks — 01–19 build, 20–29 evaluation, 30+ platform — and are never reu
 
 | # | Document | What it is |
 |---|----------|------------|
-| 01 | `01_Project_Plan_Retail_Sales_Forecasting.docx` | Scope, timebox, cut-order guardrails, packaging checklist |
+| 01 | `01_Project_Plan_Retail_Sales_Forecasting.docx` | Scope, cut-order guardrails, packaging checklist |
 | 08 | `08_GitHub_Repository_Setup_Guide.docx` | Repository design and the Git / PBIP workflow, no prior Git assumed |
 | 12 | `12_PBI_Report_Mockup.html` | Interactive static mockup of the three report pages |
 | 13 | `13_Visual_Build_Instructions.docx` | Click-by-click build of every visual, with the conformance spec |
